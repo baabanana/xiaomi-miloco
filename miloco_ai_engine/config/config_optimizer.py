@@ -32,7 +32,6 @@ DEFAULT_NO_GPU_MIMO_CONFIG_UPDATE = ModelConfigUpdate(
     chunk_size=256
 )
 LOW_MODE_MIMO_CONFIG_UPDATE = ModelConfigUpdate(
-    device=ModelDevice.CUDA,
     cache_seq_num=3,
     parallel_seq_num=8,
     total_context_num=8192,
@@ -40,7 +39,6 @@ LOW_MODE_MIMO_CONFIG_UPDATE = ModelConfigUpdate(
 )
 SMALL_MODE_MIMO_CONFIG_UPDATE = LOW_MODE_MIMO_CONFIG_UPDATE
 MEDIUM_MODE_MIMO_CONFIG_UPDATE = ModelConfigUpdate(
-    device=ModelDevice.CUDA,
     cache_seq_num=5,
     parallel_seq_num=12,
     total_context_num=16384,
@@ -49,14 +47,12 @@ MEDIUM_MODE_MIMO_CONFIG_UPDATE = ModelConfigUpdate(
 FULL_MODE_MIMO_CONFIG_UPDATE = MEDIUM_MODE_MIMO_CONFIG_UPDATE
 
 DEFAULT_NO_GPU_QWEN3_CONFIG_UPDATE = ModelConfigUpdate(
-    device=ModelDevice.CPU,
     cache_seq_num=0,
     parallel_seq_num=2,
     total_context_num=12288,
     chunk_size=1024
 )
 LOW_MODE_QWEN3_CONFIG_UPDATE = ModelConfigUpdate(
-    device=ModelDevice.CUDA,
     cache_seq_num=0,
     parallel_seq_num=2,
     total_context_num=12288,
@@ -65,7 +61,6 @@ LOW_MODE_QWEN3_CONFIG_UPDATE = ModelConfigUpdate(
 SMALL_MODE_QWEN3_CONFIG_UPDATE = LOW_MODE_QWEN3_CONFIG_UPDATE
 MEDIUM_MODE_QWEN3_CONFIG_UPDATE = SMALL_MODE_QWEN3_CONFIG_UPDATE
 FULL_MODE_QWEN3_CONFIG_UPDATE = ModelConfigUpdate(
-    device=ModelDevice.CUDA,
     cache_seq_num=0,
     parallel_seq_num=3,
     total_context_num=24576,

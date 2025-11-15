@@ -11,6 +11,7 @@ MAX_CUDA_LAYERS = 50
 class ModelDevice(Enum):
     CPU = "cpu"
     CUDA = "cuda"
+    MPS = "mps"
     UNKNOWN = "unknown"
 
     @classmethod
@@ -21,7 +22,8 @@ class ModelConfigUpdate(BaseModel):
     """Model configuration update"""
     model_config = ConfigDict(protected_namespaces=(), extra="allow")
 
-    device: ModelDevice = Field(description="Device")
+    # changeable parameters
+    device: Optional[ModelDevice] = Field(default=None, description="Device (None means no change)")
     cache_seq_num: int = Field(description="Cache sequence count")
     parallel_seq_num: int = Field(description="Parallel sequence count")
     total_context_num: int = Field(description="Context window size")
@@ -74,6 +76,12 @@ class ModelConfig(BaseModel):
         """
         Update model configuration
         """
+        # only update not none fields
+        update_dict = config_update.model_dump(exclude_none=True)  # 排除 None 值
+        for key, value in update_dict.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
+
         self.n_gpu_layers = MAX_CUDA_LAYERS if config_update.device == ModelDevice.CUDA else 0
         self.cache_seq_num = config_update.cache_seq_num
         self.n_seq_max = self.cache_seq_num + config_update.parallel_seq_num

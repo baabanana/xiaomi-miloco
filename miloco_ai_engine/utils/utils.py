@@ -233,3 +233,4 @@ def is_wsl():
 
 def is_linux():
     return sys.platform.startswith("linux")
+
