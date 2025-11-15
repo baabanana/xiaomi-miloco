@@ -227,3 +227,7 @@ $RECYCLE.BIN/
 
 # web ui build static files in miloco_server
 miloco_server/static/
+
+# AI and Code ENV
+.claude/
+.github/
