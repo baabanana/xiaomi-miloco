@@ -8,6 +8,8 @@ import subprocess
 import logging
 from miloco_ai_engine.utils.utils import validate_model_path, get_file_size
 from typing import Optional
+import platform
+import psutil
 
 logger = logging.getLogger(__name__)
 
@@ -17,28 +19,39 @@ PROCESS_SUCESS_CODE = 0
 
 def get_cuda_memory_info():
     """
-    get CUDA memory information
+    get memory information
     return: (total_memory_gb, free_memory_gb, available) or (None, None, False)
     """
     try:
-        result = subprocess.run([
-            'nvidia-smi', '--query-gpu=memory.total,memory.free',
-            '--format=csv,noheader,nounits'
-        ], capture_output=True, text=True, timeout=PROCESS_TIMEOUT, check=True)
+        # if using linux or windows
+        if platform.system() in ['Linux', 'Windows']:
+            result = subprocess.run([
+                'nvidia-smi', '--query-gpu=memory.total,memory.free',
+                '--format=csv,noheader,nounits'
+            ], capture_output=True, text=True, timeout=PROCESS_TIMEOUT, check=True)
 
-        if result.returncode == PROCESS_SUCESS_CODE:
-            lines = result.stdout.strip().split('\n')
-            if lines and lines[0]:
-                # get the information of the first GPU
-                total_mb, free_mb = lines[0].split(', ')
-                total_gb = float(total_mb) / 1024
-                free_gb = float(free_mb) / 1024
-                return total_gb, free_gb, True
+            if result.returncode == PROCESS_SUCESS_CODE:
+                lines = result.stdout.strip().split('\n')
+                if lines and lines[0]:
+                    # get the information of the first GPU
+                    total_mb, free_mb = lines[0].split(', ')
+                    total_gb = float(total_mb) / 1024
+                    free_gb = float(free_mb) / 1024
+                    return total_gb, free_gb, True
+            else:
+                logger.error('get CUDA memory information failed: %s', result.stderr)
+                return None, None, False
+        if platform.system() == 'Darwin':
+            # On macOS, use psutil to get memory info as nvidia-smi is not available
+            virtual_mem = psutil.virtual_memory()
+            total_gb = virtual_mem.total / (1024 ** 3)
+            free_gb = virtual_mem.available / (1024 ** 3)
+            return total_gb, free_gb, True
         else:
-            logger.error('get CUDA memory information failed: %s', result.stderr)
+            logger.error('Unsupported platform')
             return None, None, False
     except Exception as e: # pylint: disable=broad-exception-caught
-        logger.warning('Failed to get CUDA memory info: %s', e)
+        logger.warning('Failed to get memory info: %s', e)
         return None, None, False
 
 
@@ -70,3 +83,11 @@ def estimate_vram_usage(model_path: str, mmproj_path: Optional[str], n_ctx: int,
     except Exception as e: # pylint: disable=broad-exception-caught
         logger.warning('estimate vram usage failed for %s: %s', model_path, e)
         return -1.0
+
+# if __name__ == '__main__':
+#     total, free, available = get_cuda_memory_info()
+#     if available:
+#         print(f'Total GPU Memory: {total:.2f} GB')
+#         print(f'Free GPU Memory: {free:.2f} GB')
+#     else:
+#         print('Failed to retrieve GPU memory information.')

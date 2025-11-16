@@ -9,7 +9,6 @@
 - macOS deployment supports **AI Engine backend only**
 - Requires basic command-line and Python development skills
 - Requires understanding of model configuration and system resource tuning
-- **Does NOT support** `auto_opt_vram` automatic VRAM optimization
 
 ## System Requirements
 
@@ -69,9 +68,9 @@ models:
     device: "mps"  # Must be set to mps
 ```
 
-**3. Disable Automatic VRAM Optimization**
+**3. Recommand Disable Automatic VRAM Optimization**
 
-⚠️ **This feature is NOT supported on macOS deployment, manual configuration required**:
+⚠️ **This feature is NOT test on macOS deployment, manual configuration required**:
 
 ```yaml
 auto_opt_vram: false  # Must remain false

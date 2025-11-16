@@ -9,7 +9,6 @@
 - macOS 端仅支持 **AI Engine 后端**部署
 - 需要具备基础的命令行操作和 Python 开发经验
 - 需要理解模型配置和系统资源调优
-- **不支持** `auto_opt_vram` 自动显存优化功能
 
 ## 系统要求
 
@@ -69,9 +68,9 @@ models:
     device: "mps"  # 必须设置为 mps
 ```
 
-**3. 禁用自动显存优化**
+**3. 建议关闭自动显存优化**
 
-⚠️ **macOS 部署不支持此功能,必须手动配置**:
+⚠️ **macos 没有经过显存优化相关测试, 建议关闭此功能**:
 
 ```yaml
 auto_opt_vram: false  # 必须保持 false
@@ -197,7 +196,7 @@ ls -lh models/Qwen/Qwen3-8B-GGUF/
 
 ### 内存溢出
 
-**不支持 `auto_opt_vram`**,需手动降低配置参数:
+**没有优化mac平台的 `auto_opt_vram`功能**,需手动降低配置参数:
 
 ```yaml
 models:
