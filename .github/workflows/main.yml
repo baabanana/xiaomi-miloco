@@ -32,6 +32,7 @@ jobs:
           cd web_ui
           npm ci
           npm run build
+          mkdir ../miloco_server/static/
           cp -r dist/* ../miloco_server/static/
       
       # 2. 构建 miot-kit
